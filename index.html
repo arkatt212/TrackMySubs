@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" sizes="32x32" href="/logos/photo_2025-04-05_21-01-41.jpg">
+<link rel="icon" type="image/png" sizes="16x16" href="/logos/photo_2025-04-05_21-01-41.jpg">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TrackMySubs</title>
+  <meta name="description" content="TrackMySubs helps you calculate your total monthly subscription costs. Select your services and instantly see what you're paying.">
+
+<meta name="keywords" content="TrackMySubs, subscription calculator, monthly subscriptions, streaming services, manage subscriptions, Netflix, Disney+, Shahid, subscription tracker">
+
+<meta name="author" content="TrackMySubs">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Open Graph for social sharing -->
+<meta property="og:title" content="TrackMySubs | Subscription Cost Calculator">
+<meta property="og:description" content="Calculate and track your monthly subscriptions easily with TrackMySubs.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://yourwebsite.com">
+<meta property="og:image" content="https://yourwebsite.com/preview-image.jpg">
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="TrackMySubs">
+<meta name="twitter:description" content="Easily calculate and manage all your subscriptions in one place.">
+<meta name="twitter:image" content="https://yourwebsite.com/preview-image.jpg">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+  <style>
+    :root {
+      --blue-popsicle: #0f2862;
+      --redline: #9e363a;
+      --purple-shadow: #091f36;
+      --grey-blue-leaf: #4f5f76;
+      --apricot-avala: #f4a261;
+    }
+    body {
+      background: linear-gradient(-45deg, var(--blue-popsicle), var(--purple-shadow), var(--grey-blue-leaf));
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      color: #fff;
+      padding-bottom: 3rem;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    header {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 2rem;
+      color: var(--apricot-avala);
+      font-weight: bold;
+    }
+    h2 {
+      text-align: center;
+      color: var(--apricot-avala);
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .subscription-box {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2rem;
+      border-radius: 2rem;
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease;
+    }
+    .subscription-box:hover {
+      transform: translateY(-5px);
+    }
+    .subscription-box img {
+      width: 88px;
+      height: 88px;
+      object-fit: contain; /* This ensures logos fit properly */
+      border-radius: 50%;
+      margin-bottom: 0.75rem;
+      background-color: rgba(255, 255, 255, 0.7); /* Light background for logos */
+      padding: 10px;
+    }
+    .plans {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    .plans button {
+      background: var(--redline);
+      border: none;
+      color: white;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+      border-radius: 2rem;
+      transition: background 0.3s;
+    }
+    .plans button:hover {
+      background: var(--apricot-avala);
+      color: #000;
+    }
+    .plans button.active {
+      background: var(--grey-blue-leaf);
+    }
+    .selected-label {
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      font-style: italic;
+      color: #ccc;
+    }
+    #showTotalBtn {
+      display: block;
+      margin: 2rem auto;
+      background: transparent;
+      border: 2px solid var(--apricot-avala);
+      color: var(--apricot-avala);
+      border-radius: 2rem;
+      padding: 0.8rem 2rem;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.4s ease;
+    }
+    #showTotalBtn:hover {
+      background: var(--apricot-avala);
+      color: var(--purple-shadow);
+    }
+    .totals {
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-top: 1.5rem;
+      display: none;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease;
+      text-shadow: 0 0 10px var(--apricot-avala), 0 0 20px white;
+      color: var(--apricot-avala);
+    }
+    .totals.show {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .ad-banner {
+      text-align: center;
+      margin: 2rem auto;
+      padding: 1.5rem;
+      background: rgba(255,255,255,0.1);
+      border-radius: 1rem;
+      max-width: 800px;
+      font-size: 1rem;
+      color: #eee;
+    }
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+    @media (max-width: 960px) {
+      .grid-3 {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      }
+    }
+    /* Arrow button styles */
+    .arrow-button {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      background-color: var(--apricot-avala);
+      color: var(--purple-shadow);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+      z-index: 100;
+      transition: transform 0.3s, background-color 0.3s;
+      border: none;
+    }
+    .arrow-button:hover {
+      transform: translateY(-5px);
+      background-color: white;
+    }
+    .arrow-button svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+    
+    /* Selection List Styles */
+    .selection-list {
+      position: fixed;
+      bottom: 30px;
+      left: 30px;
+      background: rgba(9, 31, 54, 0.85);
+      border-radius: 1rem;
+      padding: 1rem;
+      max-width: 250px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      border: 1px solid var(--grey-blue-leaf);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    
+    .selection-list.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    
+    .selection-list h3 {
+      color: var(--apricot-avala);
+      margin: 0 0 0.5rem 0;
+      font-size: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .selection-list-items {
+      max-height: 200px;
+      overflow-y: auto;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    
+    .selection-list-items li {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.85rem;
+    }
+    
+    .selection-list-items li:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    
+    .selection-list .price {
+      color: var(--apricot-avala);
+      font-weight: bold;
+    }
+    
+    .selection-list .toggle-btn {
+      background: none;
+      border: none;
+      color: var(--apricot-avala);
+      cursor: pointer;
+      padding: 0;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    
+    .selection-list .empty-message {
+      font-style: italic;
+      color: #ccc;
+      font-size: 0.85rem;
+      text-align: center;
+      padding: 0.5rem 0;
+    }
+    
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid var(--apricot-avala);
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+<header>TrackMySubs</header>
+<div class="ad-banner">[ Your Ad Here — Replace with real ad code ]</div>
+<main class="container">
+  <h2>Your Subscriptions</h2>
+  <div class="grid-3" id="appGrid">
+    <div class="subscription-box" data-app="Netflix">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix">
+      <div class="plans">
+        <button onclick="selectPlan(this, 'Netflix', 9)">Basic - $9</button>
+        <button onclick="selectPlan(this, 'Netflix', 15.5)">Standard - $15.5</button>
+        <button onclick="selectPlan(this, 'Netflix', 20)">Premium - $20</button>
+      </div>
+      <div class="selected-label" id="label-Netflix">Not selected</div>
+    </div>
+    <!-- Editable app slots --><div class="subscription-box" data-app="Spotify">
+  <img src="/logos/Spotify_logo_without_text.svg.png" alt="Spotify">
+  <div class="plans">
+    <button onclick="selectPlan(this, 'Spotify', 10.99)">Premium – $10.99</button>
+    <button onclick="selectPlan(this, 'Spotify', 16.99)">Family – $16.99</button>
+  </div>
+  <div class="selected-label" id="label-Spotify">Not selected</div>
+</div>
+
+<div class="subscription-box" data-app="YouTube Premium">
+  <img src="/logos/3146788_youtube_logo_icon.png" alt="YouTube Premium">
+  <div class="plans">
+    <button onclick="selectPlan(this, 'YouTube Premium', 13.99)">Individual – $13.99</button>
+    <button onclick="selectPlan(this, 'YouTube Premium', 22.99)">Family – $22.99</button>
+  </div>
+  <div class="selected-label" id="label-YouTube Premium">Not selected</div>
+</div>
+
+<div class="subscription-box" data-app="Max">
+  <img src="/logos/Max_logo.svg.png" alt="Max">
+  <div class="plans">
+    <button onclick="selectPlan(this, 'Max', 9.99)">With Ads – $9.99</button>
+    <button onclick="selectPlan(this, 'Max', 15.99)">Ad-Free – $15.99</button>
+  </div>
+  <div class="selected-label" id="label-Max">Not selected</div>
+</div>
+
+<div class="subscription-box" data-app="Apple Music">
+  <img src="/logos/apple-music-01.png" alt="Apple Music">
+  <div class="plans">
+    <button onclick="selectPlan(this, 'Apple Music', 10.99)">Individual – $10.99</button>
+    <button onclick="selectPlan(this, 'Apple Music', 16.99)">Family – $16.99</button>
+  </div>
+  <div class="selected-label" id="label-Apple Music">Not selected</div>
+</div>
+
+<div class="subscription-box" data-app="Amazon Prime Video">
+  <img src="/logos/Amazon_Prime_Video_logo_(2024).svg.png" alt="Amazon Prime Video">
+  <div class="plans">
+    <button onclick="selectPlan(this, 'Amazon Prime Video', 8.99)">Prime Video – $8.99</button>
+    <button onclick="selectPlan(this, 'Amazon Prime', 14.99)">Amazon Prime (includes Prime Video) – $14.99</button>
+  </div>
+  <div class="selected-label" id="label-Amazon Prime Video">Not selected</div>
+</div>
+
+<div class="subscription-box" data-app="Hulu">
+  <img src="/logos/Hulu-Logo.wine.png" alt="Hulu">
+  <div class="plans">
+    <button onclick="selectPlan(this, 'Hulu', 7.99)">With Ads – $7.99</button>
+    <button onclick="selectPlan(this, 'Hulu', 14.99)">Ad-Free – $14.99</button>
+  </div>
+  <div class="selected-label" id="label-Hulu">Not selected</div>
+</div>
+
+<div class="subscription-box" data-app="Disney+">
+  <img src="/logos/a8e5567d1658de062d95d079ebf536b0_4096x2309_6dedcc02.png" alt="Disney+">
+  <div class="plans">
+    <button onclick="selectPlan(this, 'Disney+', 7.99)">Basic (With Ads) – $7.99</button>
+    <button onclick="selectPlan(this, 'Disney+', 13.99)">Premium (Ad-Free) – $13.99</button>
+  </div>
+  <div class="selected-label" id="label-Disney+">Not selected</div>
+</div>
+
+<div class="subscription-box" data-app="ChatGPT Plus">
+  <img src="/logos/ChatGPT-Logo.svg.png" alt="ChatGPT Plus">
+  <div class="plans">
+    <button onclick="selectPlan(this, 'ChatGPT Plus', 20.00)">Plus – $20.00</button>
+  </div>
+  <div class="selected-label" id="label-ChatGPT Plus">Not selected</div>
+</div>
+<div class="subscription-box" data-app="Peacock">
+    <img src="/logos/NBCUniversal_Peacock_Logo.svg.png" alt="Peacock">
+    <div class="plans">
+      <button onclick="selectPlan(this, 'Peacock', 7.99)">Premium – $7.99</button>
+      <button onclick="selectPlan(this, 'Peacock', 13.99)">Premium Plus – $13.99</button>
+    </div>
+    <div class="selected-label" id="label-Peacock">Not selected</div>
+  </div>
+  
+  <div class="subscription-box" data-app="Paramount+">
+    <img src="/logos/paramount.png" alt="Paramount+">
+    <div class="plans">
+      <button onclick="selectPlan(this, 'Paramount+', 7.99)">Essential – $7.99</button>
+      <button onclick="selectPlan(this, 'Paramount+', 12.99)">With Showtime – $12.99</button>
+    </div>
+    <div class="selected-label" id="label-Paramount+">Not selected</div>
+  </div>
+  
+  <div class="subscription-box" data-app="Apple TV+">
+    <img src="/logos/Apple_TV-Logo.wine.png" alt="Apple TV+">
+    <div class="plans">
+      <button onclick="selectPlan(this, 'Apple TV+', 9.99)">Standard – $9.99</button>
+    </div>
+    <div class="selected-label" id="label-Apple TV+">Not selected</div>
+  </div>
+  
+  <div class="subscription-box" data-app="Discovery+">
+    <img src="/logos/Discovery+.png" alt="Discovery+">
+    <div class="plans">
+      <button onclick="selectPlan(this, 'Discovery+', 5.99)">Ad-Lite – $5.99</button>
+      <button onclick="selectPlan(this, 'Discovery+', 8.99)">Ad-Free – $8.99</button>
+    </div>
+    <div class="selected-label" id="label-Discovery+">Not selected</div>
+  </div>
+  
+  <div class="subscription-box" data-app="Sling TV">
+    <img src="/logos/Sling_TV_logo.svg.png" alt="Sling TV">
+    <div class="plans">
+      <button onclick="selectPlan(this, 'Sling TV', 46.00)">Orange – $46.00</button>
+      <button onclick="selectPlan(this, 'Sling TV', 46.00)">Blue – $46.00</button>
+      <button onclick="selectPlan(this, 'Sling TV', 61.00)">Orange & Blue – $61.00</button>
+    </div>
+    <div class="selected-label" id="label-Sling TV">Not selected</div>
+  </div>
+  
+  <div class="subscription-box" data-app="Fubo TV">
+    <img src="/logos/fubotv-logo-png_seeklogo-460367.png" alt="Fubo TV">
+    <div class="plans">
+      <button onclick="selectPlan(this, 'Fubo TV', 79.99)">Pro – $79.99</button>
+    </div>
+    <div class="selected-label" id="label-Fubo TV">Not selected</div>
+  </div>
+  
+  <div class="subscription-box" data-app="DirecTV Stream">
+    <img src="/logos/directv-stream-4096.png" alt="DirecTV Stream">
+    <div class="plans">
+      <button onclick="selectPlan(this, 'DirecTV Stream', 86.99)">Entertainment – $86.99</button>
+      <button onclick="selectPlan(this, 'DirecTV Stream', 114.99)">Choice – $114.99</button>
+      <button onclick="selectPlan(this, 'DirecTV Stream', 169.99)">Premier – $169.99</button>
+    </div>
+    <div class="selected-label" id="label-DirecTV Stream">Not selected</div>
+  </div>
+  
+  <div class="subscription-box" data-app="Dropout.tv">
+    <img src="/logos/Dropout_Organization_Logo_Square.png" alt="Dropout.tv">
+    <div class="plans">
+      <button onclick="selectPlan(this, 'Dropout.tv', 6.99)">Standard – $6.99</button>
+    </div>
+    <div class="selected-label" id="label-Dropout.tv">Not selected</div>
+  </div>
+  
+  <div class="subscription-box" data-app="HelloFresh">
+    <img src="/logos/HelloFresh-Logo.wine.png" alt="HelloFresh">
+    <div class="plans">
+      <button onclick="selectPlan(this, 'HelloFresh', 8.99)">Per Serving – $8.99</button>
+    </div>
+    <div class="selected-label" id="label-HelloFresh">Not selected</div>
+  </div>
+  <div class="subscription-box" data-app="Xbox Game Pass">
+    <img src="/logos/Xbox_Game_Pass_new_logo_-_colored_version.svg.png" alt="Xbox Game Pass">
+    <div class="plans">
+      <button onclick="selectPlan(this, 'Xbox Game Pass', 9.99)">Core – $9.99</button>
+      <button onclick="selectPlan(this, 'Xbox Game Pass', 14.99)">Standard – $14.99</button>
+      <button onclick="selectPlan(this, 'Xbox Game Pass', 16.99)">Ultimate – $16.99</button>
+    </div>
+    <div class="selected-label" id="label-Xbox Game Pass">Not selected</div>
+  </div>
+  
+  <div class="subscription-box" data-app="Discord Nitro">
+    <img src="/logos/discord-logo.png" alt="Discord Nitro">
+    <div class="plans">
+      <button onclick="selectPlan(this, 'Discord Nitro', 9.99)">Nitro – $9.99</button>
+    </div>
+    <div class="selected-label" id="label-Discord Nitro">Not selected</div>
+  </div>
+  
+  <div class="subscription-box" data-app="PlayStation Plus">
+    <img src="/logos/75291728e2d8458a104b6abd0b062b70.png" alt="PlayStation Plus">
+    <div class="plans">
+      <button onclick="selectPlan(this, 'PlayStation Plus', 9.99)">Essential – $9.99</button>
+      <button onclick="selectPlan(this, 'PlayStation Plus', 14.99)">Extra – $14.99</button>
+      <button onclick="selectPlan(this, 'PlayStation Plus', 17.99)">Premium – $17.99</button>
+    </div>
+    <div class="selected-label" id="label-PlayStation Plus">Not selected</div>
+  </div>
+  
+  <div class="subscription-box" data-app="Nintendo Switch Online">
+    <img src="/logos/unnamed.png" alt="Nintendo Switch Online">
+    <div class="plans">
+      <button onclick="selectPlan(this, 'Nintendo Switch Online', 3.99)">Individual – $3.99</button>
+      <button onclick="selectPlan(this, 'Nintendo Switch Online', 7.99)">Family – $7.99</button>
+    </div>
+    <div class="selected-label" id="label-Nintendo Switch Online">Not selected</div>
+  </div>
+  
+  <div class="subscription-box" data-app="EA Play">
+    <img src="/logos/EA_Play_logo.svg.png" alt="EA Play">
+    <div class="plans">
+      <button onclick="selectPlan(this, 'EA Play', 5.99)">Standard – $5.99</button>
+    </div>
+    <div class="selected-label" id="label-EA Play">Not selected</div>
+  </div>
+  
+  <div class="subscription-box" data-app="Crunchyroll">
+    <img src="/logos/61362667f5966900044cbf72.png" alt="Crunchyroll">
+    <div class="plans">
+      <button onclick="selectPlan(this, 'Crunchyroll', 7.99)">Fan – $7.99</button>
+      <button onclick="selectPlan(this, 'Crunchyroll', 11.99)">Mega Fan – $11.99</button>
+      <button onclick="selectPlan(this, 'Crunchyroll', 15.99)">Ultimate Fan – $15.99</button>
+    </div>
+    <div class="selected-label" id="label-Crunchyroll">Not selected</div>
+  </div>
+  </div>
+  <button id="showTotalBtn" onclick="toggleTotal()">Show Monthly Total</button>
+  <div class="totals" id="totalBox">Monthly Total: $0</div>
+  <div class="ad-banner">[ Your Ad Here — Replace with real ad code ]</div>
+</main>
+<footer class="container">
+  <small><a href="#">Privacy</a> • <a href="#">Terms</a></small>
+</footer>
+
+<!-- Arrow Button -->
+<button class="arrow-button" id="arrowButton" aria-label="Go to total">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M12 5l-7 7 1.41 1.41L11 8.83V19h2V8.83l4.59 4.58L19 12l-7-7z"/>
+  </svg>
+</button>
+
+<!-- Selection List -->
+<div class="selection-list" id="selectionList">
+  <h3>
+    Selected Services
+    <button class="toggle-btn" id="toggleSelectionList" title="Minimize">&minus;</button>
+  </h3>
+  <ul class="selection-list-items" id="selectionListItems">
+    <li class="empty-message">No services selected</li>
+  </ul>
+  <div class="total-row">
+    <span>Total:</span>
+    <span class="price" id="miniTotal">$0.00</span>
+  </div>
+</div>
+
+<script>
+// Add this at the beginning of your script section
+let selectedPlans = {};
+let totalShown = false;
+let selectionListMinimized = true; // Changed to true to start minimized
+
+// Update the initialization code at the bottom of your script section
+// Initialize
+document.getElementById('arrowButton').style.display = 'none';
+document.getElementById('selectionList').classList.add('show');
+
+// Initialize the selection list in minimized state
+const listItems = document.getElementById('selectionListItems');
+const toggleBtn = document.getElementById('toggleSelectionList');
+document.querySelector('.total-row').style.display = 'none';
+listItems.style.display = 'none';
+toggleBtn.innerHTML = '&plus;';
+toggleBtn.title = 'Expand';
+function selectPlan(button, app, price) {
+  const buttons = button.parentElement.querySelectorAll('button');
+  buttons.forEach(btn => btn.classList.remove('active'));
+  if (selectedPlans[app] === price) {
+    delete selectedPlans[app];
+    document.getElementById(`label-${app}`).innerText = 'Not selected';
+  } else {
+    selectedPlans[app] = price;
+    button.classList.add('active');
+    document.getElementById(`label-${app}`).innerText = `Selected: $${price}`;
+  }
+  if (totalShown) hideTotal();
+  
+  // Update the selection list
+  updateSelectionList();
+}
+
+function updateTotal() {
+  const total = Object.values(selectedPlans).reduce((sum, val) => sum + val, 0);
+  const box = document.getElementById('totalBox');
+  box.innerText = `Monthly Total: $${total.toFixed(2)}`;
+  
+  // Update mini total in selection list
+  document.getElementById('miniTotal').innerText = `$${total.toFixed(2)}`;
+}
+
+function toggleTotal() {
+  const box = document.getElementById('totalBox');
+  updateTotal();
+  box.style.display = 'block';
+  setTimeout(() => { box.classList.add('show'); }, 10);
+  totalShown = true;
+}
+
+function hideTotal() {
+  const box = document.getElementById('totalBox');
+  box.classList.remove('show');
+  totalShown = false;
+  setTimeout(() => { box.style.display = 'none'; }, 500);
+}
+
+// Selection List Functions
+function updateSelectionList() {
+  const listElement = document.getElementById('selectionListItems');
+  const selectionList = document.getElementById('selectionList');
+  
+  // Clear current list
+  listElement.innerHTML = '';
+  
+  // Check if there are any selected plans
+  if (Object.keys(selectedPlans).length === 0) {
+    listElement.innerHTML = '<li class="empty-message">No services selected</li>';
+  } else {
+    // Add each selected plan to the list
+    for (const [app, price] of Object.entries(selectedPlans)) {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span>${app}</span>
+        <span class="price">$${price.toFixed(2)}</span>
+      `;
+      listElement.appendChild(li);
+    }
+  }
+  
+  // Update total
+  updateTotal();
+  
+  // Show the selection list if it was hidden
+  if (!selectionList.classList.contains('show')) {
+    selectionList.classList.add('show');
+  }
+}
+
+function toggleSelectionList() {
+  const selectionList = document.getElementById('selectionList');
+  const toggleBtn = document.getElementById('toggleSelectionList');
+  const listItems = document.getElementById('selectionListItems');
+  
+  if (selectionListMinimized) {
+    // Expand
+    listItems.style.display = 'block';
+    document.querySelector('.total-row').style.display = 'flex';
+    toggleBtn.innerHTML = '&minus;';
+    toggleBtn.title = 'Minimize';
+  } else {
+    // Minimize
+    listItems.style.display = 'none';
+    document.querySelector('.total-row').style.display = 'none';
+    toggleBtn.innerHTML = '&plus;';
+    toggleBtn.title = 'Expand';
+  }
+  
+  selectionListMinimized = !selectionListMinimized;
+}
+
+// Arrow button functionality
+document.getElementById('arrowButton').addEventListener('click', function() {
+  const totalButton = document.getElementById('showTotalBtn');
+  totalButton.scrollIntoView({ behavior: 'smooth' });
+  
+  // Visual feedback on button
+  this.style.transform = 'scale(0.9)';
+  setTimeout(() => {
+    this.style.transform = '';
+  }, 200);
+});
+
+// Toggle selection list when clicking the minimize/expand button
+document.getElementById('toggleSelectionList').addEventListener('click', toggleSelectionList);
+
+// Show/hide arrow button based on scroll position
+window.addEventListener('scroll', function() {
+  const arrowButton = document.getElementById('arrowButton');
+  if (window.scrollY > 300) {
+    arrowButton.style.display = 'flex';
+  } else {
+    arrowButton.style.display = 'none';
+  }
+});
+
+// Initialize
+document.getElementById('arrowButton').style.display = 'none';
+document.getElementById('selectionList').classList.add('show');
+</script>
+</body>
+</html>
